@@ -52,49 +52,51 @@ include 'db.php';
 
 			<div class="row">
 				<div class="span12">
-					<div class="offset11 span1"><a href="logout.php" class="btn btn-danger btn-mini"><i class="icon-off"></i> Sair</a></div>
+					<div class="offset11 span1">
+						<a href="logout.php" class="btn btn-danger btn-mini"><i class="icon-off"></i> Sair</a>
+					</div>
 				</div>
 				<div class="span12">
 					<h3 class="muted">Projeto de Monografia</h3>
 				</div>
 			</div>
-			
+
 			<hr>
 
-				<table class="table table-striped table-bordered table-hover">
-					<tr>
-						<th>Data</th>
-						<th>Tel.</th>
-						<th>Lat.</th>
-						<th>Lng.</th>
-						<th>Opções</th>
-					</tr>
-					<?php
+			<table class="table table-striped table-bordered table-hover">
+				<tr>
+					<th>Data</th>
+					<th>Tel.</th>
+					<th>Lat.</th>
+					<th>Lng.</th>
+					<th>Opções</th>
+				</tr>
+				<?php
 
-					$sql = "
+				$sql = "
 SELECT
 id, data_registro, telefone, latitude, longitude
 FROM
 coordenadas";
 
-					$stmt = $db->prepare($sql);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+				$stmt = $db->prepare($sql);
+				$stmt->execute();
+				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-					//var_dump($result);
+				//var_dump($result);
 
-					foreach ($result as $i)
-					{
-						echo '<tr>';
-						echo '<td>'.date('H:i:s d/m/Y', strtotime($i['data_registro'])).'</td>';
-						echo '<td>'.$i['telefone'].'</td>';
-						echo '<td align="right">'.$i['latitude'].'</td>';
-						echo '<td align="right">'.$i['longitude'].'</td>';
-						echo '<td><a href="map.php?id='.$i['id'].'" class="btn btn-info"><i class="icon-eye-open"></i> Ver mapa</a></td>';
-						echo '</tr>';
-					}
-					?>
-				</table>
+				foreach ($result as $i)
+				{
+					echo '<tr>';
+					echo '<td>'.date('H:i:s d/m/Y', strtotime($i['data_registro'])).'</td>';
+					echo '<td>'.$i['telefone'].'</td>';
+					echo '<td align="right">'.$i['latitude'].'</td>';
+					echo '<td align="right">'.$i['longitude'].'</td>';
+					echo '<td><a href="map.php?id='.$i['id'].'" class="btn btn-info"><i class="icon-eye-open"></i> Ver mapa</a></td>';
+					echo '</tr>';
+				}
+				?>
+			</table>
 
 			<hr>
 

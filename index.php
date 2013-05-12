@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -60,15 +59,16 @@ session_start();
 
 			<form class="form-signin" action="login.php" method="post">
 				<h2 class="form-signin-heading">Seja Bem-Vindo!</h2>
-				
+
 				<?php
-					// usuário não encontrado na sessão
-					if ( empty($_SESSION['session_id']) && !empty($_SESSION['session_msg']) ) {
-						echo $_SESSION['session_msg'];						
-						unset($_SESSION['session_id'], $_SESSION['session_msg']);
-					}
+				// usuário não encontrado na sessão
+				if (empty($_SESSION['session_id']) && !empty($_SESSION['session_msg']))
+				{
+					echo $_SESSION['session_msg'];
+					unset($_SESSION['session_id'], $_SESSION['session_msg']);
+				}
 				?>
-				
+
 				<input type="text" class="input-block-level" name="username" placeholder="User">
 				<input type="password" class="input-block-level" name="password" placeholder="Password">
 				<button class="btn btn-large btn-primary" type="submit">

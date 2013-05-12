@@ -5,7 +5,7 @@ session_start();
 if (empty($_SESSION['session_id']))
 {
 	$_SESSION['session_not_found'] = true;
-	//header('Location: index.php');
+	header('Location: index.php');
 }
 else
 {
@@ -31,7 +31,7 @@ $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>Projeto Monografia</title>
@@ -51,6 +51,19 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 				color: white !important;
 				background-color: black !important;
 				text-align: center;
+			}
+			#google_maps {
+				width: 1200px;
+				height: 400px;
+				border: 1px solid #ccc;
+			}
+			/* issue: https://github.com/twitter/bootstrap/issues/1552#issuecomment-4366480*/
+			#google_maps label {
+				width: auto;
+				display: inline;
+			}
+			#google_maps img {
+				max-width: none;
 			}
 		</style>
 		
@@ -91,25 +104,42 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 			<br />
 				
 			<div class="row">
-				
-				
+				<div class="span12">
+					<div id="google_maps"></div>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="footer">
+				<p>
+					&copy; Company 2013
+				</p>
+			</div>
+
+		</div>
+		<!-- /container -->
+		
+						
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript">
-											$(function() {
+														/**
+		 * Google Maps V3 
+		 */
+												$(function() {
 							var map;
 							var lat, lng; 
 							
 							lat = <?php echo $result['latitude']; ?>;
-							lng = <?php echo $result['longitude']; ?>
-								;
+							lng = <?php echo $result['longitude']; ?>;
 
 								function initialize() {
 									var mapDiv = document.getElementById('google_maps');
 									map = new google.maps.Map(mapDiv, {
 										center : new google.maps.LatLng(lat, lng),
-										zoom : 16,
-										mapTypeId : google.maps.MapTypeId.ROADMAP,
-										streetViewControl : false
+										zoom : 15,
+										mapTypeId : google.maps.MapTypeId.ROADMAP
+										//streetViewControl : false
 									});
 
 									google.maps.event.addListenerOnce(map, 'tilesloaded', addMarker(lat, lng));
@@ -130,20 +160,5 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
 								});
 				</script>
-				<div class="span12">
-					<div id="google_maps" style="width: 100%; height: 400px; border: 1px solid #ccc;"></div>
-				</div>
-			</div>
-
-			<hr>
-
-			<div class="footer">
-				<p>
-					&copy; Company 2013
-				</p>
-			</div>
-
-		</div>
-		<!-- /container -->
 	</body>
 </html>
