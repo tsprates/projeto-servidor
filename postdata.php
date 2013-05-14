@@ -7,8 +7,9 @@
 // object $db
 include 'db.php';
 
+header('Content-Type', 'application/json');
 
-if ($_POST)
+if ($_POST && (isset($_POST['api']) && $_POST['api'] == 'teste'))
 {
 	$sql = "INSERT 
 		INTO 
@@ -25,5 +26,3 @@ else
 {
 	echo "false";
 }
-
-file_put_contents("a.txt", print_r($_POST, 1));
