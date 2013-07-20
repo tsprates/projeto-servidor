@@ -2,27 +2,37 @@
 //  Grava no banco de dados os dados enviados pelo Android.
 // ============================
 // autor: Thiago Silva
-// date: 08/05/2013
+// data:  08/05/2013
 
-// object $db
+// timzone 
+date_default_timezone_set('America/Sao_Paulo');
+setlocale (LC_ALL, 'pt_BR');
+
 include 'db.php';
 
 header('Content-Type', 'application/json');
 
 if ($_POST && (isset($_POST['api']) && $_POST['api'] == 'teste'))
 {
-	$sql = "INSERT 
+	$sql = sprintf("INSERT 
 		INTO 
-			coordenadas(telefone, longitude, latitude) 
+			coordenadas(telefone, longitude, latitude, data_registro) 
 		VALUES
-			(?, ?, ?);";
+			(?, ?, ?, '%s');", date('Y-m-d H:i:s'));
 			
 	$stmt = $db->prepare($sql);
-	$stmt->execute(array($_POST['telefone'], $_POST['longitude'], $_POST['latitude']));
+	$stmt->execute(array(
+		$_POST['telefone'], 
+		$_POST['longitude'], 
+		$_POST['latitude'])
+	);
 	
-	echo "true";
+	$return = "true";
 } 
 else 
 {
-	echo "false";
+	$return = "false";
 }
+
+// json return
+echo json_encode(array('result' => $return));
