@@ -73,11 +73,8 @@ include 'db.php';
 				</tr>
 				<?php
 
-				$sql = "
-SELECT
-id, data_registro, telefone, latitude, longitude
-FROM
-coordenadas";
+				$sql = "SELECT id, data_registro, telefone, latitude, longitude
+						FROM coordenadas";
 
 				$stmt = $db->prepare($sql);
 				$stmt->execute();

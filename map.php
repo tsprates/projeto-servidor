@@ -17,13 +17,10 @@ else
 include 'db.php';
 
 $id_map = $_GET['id'];
-$sql = "
-SELECT
-id, data_registro, telefone, latitude, longitude
-FROM
-coordenadas
-WHERE
-id = ?";
+
+$sql = "SELECT id, data_registro, telefone, latitude, longitude
+		FROM coordenadas
+		WHERE id = ?";
 
 $stmt = $db->prepare($sql);
 $stmt->bindParam(1, $id_map, PDO::PARAM_INT);
@@ -31,7 +28,7 @@ $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 	<head>
 		<meta charset="utf-8">
 		<title>Projeto Monografia</title>
@@ -123,42 +120,70 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 						
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript">
-														/**
-		 * Google Maps V3 
-		 */
-												$(function() {
-							var map;
-							var lat, lng; 
-							
-							lat = <?php echo $result['latitude']; ?>;
-							lng = <?php echo $result['longitude']; ?>;
+		$(document).ready(function() {
+				var map;
+				var lat, lng;
+				var marker, infoWindow;
+				var geocoder = new google.maps.Geocoder;
 
-								function initialize() {
-									var mapDiv = document.getElementById('google_maps');
-									map = new google.maps.Map(mapDiv, {
-										center : new google.maps.LatLng(lat, lng),
-										zoom : 15,
-										mapTypeId : google.maps.MapTypeId.ROADMAP
-										//streetViewControl : false
-									});
+				
+				infowindow = new google.maps.InfoWindow({
+    				content: 'Carregando...'
+  				});
+				
 
-									google.maps.event.addListenerOnce(map, 'tilesloaded', addMarker(lat, lng));
-								}
+				lat = <?php echo $result['latitude']; ?>;
+				lng = <?php echo $result['longitude']; ?>;
+				var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
 
 
-								google.maps.event.addDomListener(window, 'load', initialize);
+				function geocodeLatLng(geocoder, map, infowindow, latLng) {
+				  
+				  geocoder.geocode({'location': latlng}, function(results, status) {
+					if (status === google.maps.GeocoderStatus.OK) {
+					  if (results[0]) {
+						infowindow.setContent(results[1].formatted_address);
+						infowindow.open(map, marker);
+					  } else {
+						window.alert('No results found');
+					  }
+					} else {
+					  window.alert('Geocoder failed due to: ' + status);
+					}
+				  });
+				}
 
-								function addMarker(lat, lng) {
-									return function() {
-										var latLng = new google.maps.LatLng(lat, lng);
-										var marker = new google.maps.Marker({
-											position : latLng,
-											map : map
-										});
-									};
-								}
+				function initialize() {
+					var mapDiv = document.getElementById('google_maps');
+					map = new google.maps.Map(mapDiv, {
+						center : new google.maps.LatLng(lat, lng),
+						zoom : 15,
+						mapTypeId : google.maps.MapTypeId.ROADMAP
+						//streetViewControl : false
+					});
 
-								});
-				</script>
+					google.maps.event.addListenerOnce(map, 'tilesloaded', function() {
+						marker = addMarker(lat, lng);
+						marker.addListener('click', function() {
+							infowindow.close();
+							infowindow.open(map, marker);
+		  				});
+						geocodeLatLng(geocoder, map, infowindow, latlng);
+					});
+				}
+
+
+				google.maps.event.addDomListener(window, 'load', initialize);
+
+				function addMarker(lat, lng) {
+					var latLng = new google.maps.LatLng(lat, lng);
+					return new google.maps.Marker({
+						position : latLng,
+						map : map
+					});
+				}
+
+			});
+		</script>
 	</body>
 </html>
